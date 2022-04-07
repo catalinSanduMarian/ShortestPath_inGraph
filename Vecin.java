@@ -1,121 +1,79 @@
-	public class Vecin
-	{
-		String end;
-		Vecin urm;
-		int cost;
-		int supliment;
-		int size;
+public class Vecin {
+    String end;
+    Vecin next;
+    int cost;
+    int suplimentaryCost;
+    int size;
 
 
-		public Vecin()
-		{
-			end = null;
-			urm = null;
-			cost = 0;
-			supliment =0;
-			size = 0;
-		}
-/**
-*
-	adauga o strada noua la finalul listei de strazi
+    public Vecin() {
+        end = null;
+        next = null;
+        cost = 0;
+        suplimentaryCost = 0;
+        size = 0;
+    }
 
-*/
+    /**
+     * adauga o strada noua la finalul listei de strazi
+     */
 
 
+    public void AddNeighbour(String nume, int cost, int size) {
+        if (end == null) {
+            end = nume;
+            this.cost = cost;
+            this.size = size;
+        } else {
+            if (next != null) {
+                Vecin copie = next;
+                while (copie.next != null) {
+                    copie = copie.next;
+                }
 
-		public void Invecinare (String nume, int acost, int asize )
-		{	
+                copie.next = new Vecin();
+                copie.next.end = nume;
+                copie.next.cost = cost;
+                copie.next.size = size;
+            } else {
+                next = new Vecin();
+                next.end = nume;
+                next.cost = cost;
+                next.size = size;
+            }
+        }
+    }
 
+    /**
+     * adauga un cost suplimentar in cazul unui accident/blocaj
+     */
 
-			if ( end == null)
-			{
-				 end = nume;
-				 cost = acost;
-				 size = asize;
-			}
-			else
-			{
-				if ( urm != null)
-				{		
-					Vecin copie =  urm;
-					while ( copie.urm != null)
-					{
-						copie = copie.urm;
-					}
+    public void addCost(String nume, int acost) {
 
-					copie.urm = new Vecin();
-					copie.urm.end = nume;
-					copie.urm.cost = acost;
-					copie.urm.size = asize;
-				}
-				else 
-				{
-					 urm = new Vecin();
-					 urm.end = nume;
-					 urm.cost = acost;
-					 urm.size = asize;
-				}
-			}
-		}
+        if (end == null) {
+            return;
+        } else {
+            if (end.equals(nume)) {
+                //schimb costul
+                suplimentaryCost = suplimentaryCost + acost;
+                return;
+            }
+        }
 
-		/**
-*
-	adauga un cost suplimentar in cazul unui accident/blocaj
+        Vecin copie = next;
+        if (copie.end.equals(nume)) {
+            //fac vecin
+            copie.suplimentaryCost = copie.suplimentaryCost + acost;
+            return;
+        }
 
-*/
+        while (copie.next != null) {
+            copie = copie.next;
 
-		public void adaugeCost (String nume, int acost)
-		{
-
- 				if ( end == null)
-				{
-
-					return;
-				}
-				else
-				{
- 					
-
-
-					if (end.equals(nume))
-					{	
-						//schimb costul
-						supliment = supliment + acost;
-
- 						return;
-
-					}
-
-
-				}
-
-				Vecin copie = urm;
-				if (copie.end.equals (nume))
-				{
-					//fac vecin
-					copie.supliment = copie.supliment + acost;
- 					return;
-				}
-
-
-
-				while (copie.urm != null)
-
-				{
-					copie = copie.urm;
-
-					if (copie.end.equals (nume))
-					{
-						copie.supliment = copie.supliment + acost;
-						return;
-					}
-
-				}
-
-
-
-		}
-		
-
-
-	}
+            if (copie.end.equals(nume)) {
+                copie.suplimentaryCost = copie.suplimentaryCost + acost;
+                return;
+            }
+        }
+    }
+}

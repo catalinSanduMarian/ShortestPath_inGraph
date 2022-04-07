@@ -1,156 +1,62 @@
-import java.util.Scanner; 
 import java.io.File;
-import java.io.*;
+import java.io.IOException;
+import java.util.Scanner;
 
 
-public class Main{
+public class Main {
+    public static Graf grafare(int numarNoduri) {
+        Graf graph = new Graf();
+        String seg = "P";
+        for (int i = 0; i < numarNoduri; i++) {
+            String t = seg + i;
+            graph.adaugare(t);
+        }
+        return graph;
+    }
 
-
-/**
-*
-	am modelat graful dupa numarul de noduri primit ca parametru
-
-*/
-
-	public static Graf grafare(int numarNoduri)
-     	{	
-     		Graf foame = new Graf();
-     		String seg = "P";
-      		for (int i=0;i<numarNoduri; i++)
-     		{
-     			String t= seg+i;
-     			foame.adaugare (t);
-     		}	
-     		
-
-     		return foame;
-     	}
-
-	public static void main(String[] args)  throws IOException
-	{
-
-		int numarStrazi, numarNoduri;
-		String nimereala;
-
-/*
-
-	am initializat parsatorul graful si celalte entitati primite ca parametru
-
-*/
-
-
-     	Scanner myObj = new Scanner(new File ("map.in"));
-
-
-
-
-     	Graf foame;
-
-
-		numarStrazi = myObj.nextInt();
+    public static void main(String[] args) throws IOException {
+        int numarStrazi, numarNoduri;
+        String readInput;
+        Scanner myObj = new Scanner(new File("map.in"));
+        Graf graph;
+        numarStrazi = myObj.nextInt();
         numarNoduri = myObj.nextInt();
- 
-/*
+        graph = grafare(numarNoduri);
+        myObj.nextLine();
 
-	initializez graful cu numarul de noduri dat
+        for (int i = 0; i < numarStrazi; i++) {
+            readInput = myObj.nextLine();
+            String[] spatiere = readInput.split(" ");
+            int cost = Integer.parseInt(spatiere[2]);
+            int size = Integer.parseInt(spatiere[3]);
+            graph.adaugareVecin(spatiere[0], spatiere[1], cost, size);
+        }
 
-*/
-
-    	foame = grafare (numarNoduri);
-
-
-		myObj.nextLine();
-
-         for (int i=0; i<numarStrazi; i++)
-         {
-         	nimereala= myObj.nextLine();
- 
-         	String[] spatiere = nimereala.split(" ");
- 
-         	int costul = Integer.parseInt(spatiere[2]);
-         	int sizeul = Integer.parseInt(spatiere[3]);
-
-/*
-
-	apelez metoda addstreet (doar ca am denumit-o diferit)
-
-*/
-
-			foame.adaugareVecin (spatiere[0], spatiere[1],costul, sizeul);
-
-         }
-
-         while ( myObj.hasNextLine() )
-         {
-         	nimereala= myObj.nextLine();
-          	String[] spatiere = nimereala.split(" ");
+        while (myObj.hasNextLine()) {
+            readInput = myObj.nextLine();
+            String[] spacing = readInput.split(" ");
 
 
-         	if (spatiere[0].equals("drive"))
-         	{
+            if (spacing[0].equals("drive")) {
+                if (spacing[1].equals("b"))
+                    graph.drive(spacing[2], spacing[3], 1, 1, numarNoduri);
+                if (spacing[1].equals("m"))
+                    graph.drive(spacing[2], spacing[3], 1, 2, numarNoduri);
+                if (spacing[1].equals("a"))
+                    graph.drive(spacing[2], spacing[3], 2, 4, numarNoduri);
+                if (spacing[1].equals("c"))
+                    graph.drive(spacing[2], spacing[3], 3, 6, numarNoduri);
+            }
 
-/*
+            if (spacing[0].equals("accident")) {
+                int cost = Integer.parseInt(spacing[3]);
+                graph.adaugareRestrictie(spacing[1], spacing[2], cost);
+            }
 
-	apelez metoda drive (pentru a evita creearea claselor de tipul autoturism, 
-	metoda drive primeste direct size-ul si costul autoturismelor)
-
-*/
-
-         		if (spatiere[1].equals ("b"))
-
-         			foame.drive(spatiere[2], spatiere[3],1,1, numarNoduri);
-
-         		if (spatiere[1].equals ("m"))
-         			foame.drive(spatiere[2], spatiere[3],1,2,numarNoduri);
-				if (spatiere[1].equals ("a"))
-					foame.drive(spatiere[2], spatiere[3],2,4,numarNoduri);
-				if (spatiere[1].equals ("c"))
-					foame.drive(spatiere[2], spatiere[3],3,6,numarNoduri);
-
-
-         	}
-
-/*
-
-	atat comanda "accident" cat si "blocaj" fac acelasi lucri 
-	asa ca aceeasi functie este apelata in ambele cazuris
-
-*/
-
-
-
-			if (spatiere[0].equals("accident"))
-			{
-				//fac accident
-				int costul = Integer.parseInt(spatiere[3]);
-
-				foame.adaugareRestrictie (spatiere[1], spatiere[2],costul);
-
-
-			}
-			if (spatiere[0].equals("blocaj"))
-			{
-				//fac ac lucru
-				int costul = Integer.parseInt(spatiere[3]);
-				foame.adaugareRestrictie (spatiere[1], spatiere[2],costul);
-			}
-
-
-
-
-         }
-
-
-
-
-
-		}
-
-
-
-     	
-
-   
-
-
+            if (spacing[0].equals("blocaj")) {
+                int cost = Integer.parseInt(spacing[3]);
+                graph.adaugareRestrictie(spacing[1], spacing[2], cost);
+            }
+        }
+    }
 }
